@@ -76,7 +76,7 @@ endmodule
     input  logic [31:0] b,
     input  logic [3:0]  alu_op,   // 4 bits = enough for RV32I set
     output logic [31:0] result
-);
+    );
 
     always_comb begin
         case (alu_op)
