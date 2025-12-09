@@ -352,6 +352,10 @@ module instruction_memory #(
     assign instr = imem[addr[31:2]];
 
     // helper to load in TB: $readmemh can be used externally
+    initial begin
+    $readmemh("test.hex", imem);
+    end
+
 endmodule
 ```
 
