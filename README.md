@@ -94,8 +94,8 @@ endmodule
         endcase
     end
 
-endmodule
-```
+    endmodule
+    ```
 
 ---
 
