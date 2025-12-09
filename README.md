@@ -639,3 +639,19 @@ endmodule
 
 ---
 
+### Summary
+
+| Module              | Role                            | Why It Matters                          |
+| ------------------- | ------------------------------- | --------------------------------------- |
+| PC                  | Points to instruction           | Drives execution flow                   |
+| Instruction Memory  | Stores program                  | Supplies instructions                   |
+| Decoder             | Extracts fields                 | Helps regfile & ALU know what to do     |
+| Immediate Generator | Builds offsets & constants      | Needed for arithmetic, memory, branches |
+| Register File       | Holds 32 registers              | Operands + results                      |
+| Control Unit        | High-level command              | Tells datapath which actions to take    |
+| ALU Control         | Low-level ALU command           | Selects exact ALU operation             |
+| ALU                 | Performs math, logic            | Core computation engine                 |
+| Data Memory         | Stores runtime data             | Loads & stores                          |
+| Writeback MUX       | Puts result back into registers | Completes instruction                   |
+
+
