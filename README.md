@@ -101,14 +101,23 @@ endmodule
 
 ## **MODULE 3 — imm_gen.sv**
 
-**Role:** Extract immediates from instruction formats (I, S, B, U, J).
+### What it does
+- Extracts and sign-extends immediates from the 32-bit instruction according to the instruction format:
+- I-type: instr[31:20] → sign-extend to 32 bits (used by addi, lw, jalr etc.)
+- S-type: instr[31:25] & instr[11:7] concatenated → sign-extend (stores)
+- B-type: branch immediate built from instr[31], instr[7], instr[30:25], instr[11:8] with LSB = 0 → sign-extend (branch offset)
+- U-type: top 20 bits instr[31:12] then 12 zeros (lui/auipc)
+- J-type: JAL immediate built from scattered fields, LSB = 0 → sign-extend
 
-**Inputs:** instr  
-**Outputs:** imm
+### Why it matters
+- The ALU often needs an immediate value for arithmetic and address calculations.
+- Branch and jump PC targets are computed using immediates.
+- Correct sign extension is critical: many bugs (wrong branch targets, wrong load addresses) come from incorrect imm bits or sign-extension.
 
-**When this passes:**
+### How it plugs in
+- ID stage uses imm_gen to produce the immediate which is then fed either directly to the ALU (if alu_src=1) or used in PC calculation for branches/jumps.
+- For lui and auipc, the immediate is treated specially (upper bits).
 
-- imm for addi, lw, sw, beq, jal, etc. all correct.
 ```
 module imm_gen(
     input  logic [31:0] instr,
@@ -163,21 +172,26 @@ endmodule
 
 ## **MODULE 4 — control_unit.sv**
 
-**Role:** Decode RV32I instruction and generate control signals.
+### What it does
+- Takes the 32-bit instruction (primarily opcode = instr[6:0]) and sets the top-level control signals that steer datapath behavior:
+    - reg_write, alu_src, mem_read, mem_write, mem_to_reg, branch, jump, and a coarse alu_op.
+- It maps instruction classes (R-type, I-type, load, store, branch, jal/jalr, lui, auipc) to the CPU actions they require.
 
-**Inputs:** instr  
-**Outputs:**
+### Why it matters
+- Central decision-maker: without these signals you can’t know whether to writeback, whether to use immediate, whether to access memory, or whether to take a branch.
+- Keeps instruction-class logic centralized and easy to audit.
 
-- alu_src
-- mem_read
-- mem_write
-- reg_write
-- mem_to_reg
-- branch
-- jump
-- alu_op
-**When this passes:**
-- All instruction types create correct control signals.
+### How it plugs in
+- ID stage uses its outputs to:
+    - Decide whether WB will write to a register.
+    - Select ALU operand source (alu_src).
+    - Activate memory interface for load/store.
+    - Indicate branches/jumps to PC logic.
+- alu_op is a coarse hint (example encodings in your file: 00=ADD, 01=SUB-for-compare, 10=R-type, 11=I-type). That is not the final ALU opcode — it’s fed to ALU Control.
+
+### Important practical notes
+- Two-level decoding: This is standard — control_unit (opcode-level) + alu_control (funct fields) → final ALU control. Implement alu_control next.
+- jump and branch are different: branch requires a condition check by ALU (SUB/compare) before PC update; jump is unconditional (jal) — but jalr uses the register + imm, so it has alu_src=1 too.
 
 ```
 module control_unit(
