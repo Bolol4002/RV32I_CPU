@@ -6,24 +6,20 @@
 
 ## **MODULE 1 — regfile.sv**
 
-**Role:** 32 × 32-bit register file.  
-**Must support:**
-
-- 2 read ports
-    
-- 1 write port
-    
-- x0 always = 0
-    
-
-**Inputs:** clk, wen, waddr, wdata, raddr1, raddr2  
-**Outputs:** rdata1, rdata2
-
-**When this passes:**
-
-- You can read/write registers except x0.
-    
-- You simulate a tiny TB that writes and reads values.
+### What it does
+- Stores the 32 general-purpose registers (x0–x31).
+- Provides two read ports (rs1, rs2) and one write port (rd).
+- Writes occur on the rising edge of clk when wen is high.
+- Reads are combinational: reading a register returns its current contents immediately.
+- Enforces x0 = 0 (writes to x0 ignored; reads return 0).
+### Why it matters
+- Registers are the working set of the CPU — almost everything (ALU input operands, writebacks) flows through the regfile.
+- Combinational reads let the rest of the datapath (decode and ALU) get operand values in the same cycle for a single-cycle design.
+- Protecting x0 is part of the RISC-V architectural guarantee.
+### How it plugs in
+- ID stage supplies raddr1 and raddr2 to get operands for execution.
+- WB stage supplies waddr, wdata, and wen to write results back.
+- For pipelined design later, reads may come from ID pipeline register, and writes happen in WB stage (with forwarding to support hazards).
     
 
 
@@ -60,15 +56,19 @@ endmodule
 
 ## **MODULE 2 — alu.sv**
 
-**Role:** Performs RV32I ALU operations.  
-**Ops:** add, sub, and, or, xor, slt, sltu, sll, srl, sra
+### What it does
+- Implements arithmetic and bitwise operations on 32-bit inputs a and b.
+- Supports: ADD, SUB, AND, OR, XOR, SLT (signed), SLTU (unsigned), SLL, SRL, SRA.
+- Shift amount is b[4:0] (only lower 5 bits used).
+### Why it matters
+- The ALU is the execution core — everything that computes values (arithmetic, logic, compare, address calc) happens here.
+- For loads/stores and branches, ALU computes effective addresses and comparisons.
 
-**Inputs:** a, b, alu_op (4–5 bits)  
-**Output:** result
+### How it plugs in
+- Inputs come from register file (rs1, rs2) or rs1 + immediate depending on alu_src.
+- Output either goes to data_memory for stores/addresses passed or to wb for register writeback.
+- ALU selection (which operation to perform) is decided by an ALU control block (not the coarse control_unit).
 
-**When this passes:**
-
-- You feed values through a simple TB and verify all ops.
     
     ```
     module alu (
