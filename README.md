@@ -30,13 +30,29 @@ endmodule
 
 ## **Module 3 - Instruction Memory**
 ```
+mmodule Instruction_Mem(
+    input clk, reset;
+    input [31:0] read_address;
+    output reg [31:0] instruction_out;
+    reg [31:0] I_Mem[63:0];
+    );
+    integer k;
+    always @(posedge clk or posedge reset) begin
+        if(reset) begin
+            for(k=0;k<=64;k=k+1) begin
+                I_Mem[k] <= 32'b00;
+            end
+        end
+        else instruction_out <= I_Mem[read_address];
 
+    end
+endmodule
 ```
 
 ---
 
 
-## **MODULE — regfile.sv**
+## **Module 4 — Reg_File.sv**
 
 ### What it does
 - Stores the 32 general-purpose registers (x0–x31).
@@ -56,35 +72,44 @@ endmodule
 
 
 ```
-module regfile (
-    input  wire        clk,
-    input  wire        wen,
-    input  wire [4:0]  waddr,
-    input  wire [31:0] wdata,
-    input  wire [4:0]  raddr1,
-    input  wire [4:0]  raddr2,
-    output wire [31:0] rdata1,
-    output wire [31:0] rdata2
-);
+module Reg_File (
+    input  clk,
+    input  reset,
+    input RegWrite,
+    input  [4:0]  Rd,
+    input  [31:0] Write_data,
+    input  [4:0]  rs1,
+    input  [4:0]  rs2,
+    output [31:0] read_data1,
+    output [31:0] read_data2
+    );
 
-    // 32 registers, each 32 bits
-    reg [31:0] mem [31:0];
+    integer k;
+    reg [31:0] Registers [31:0];
 
     // synchronous write
-    always @(posedge clk) begin
-        if (wen && (waddr != 5'd0)) begin
-            mem[waddr] <= wdata;  // x0 is hard-wired to zero
+    always @(posedge clk or posedge reset) begin
+        if(reset) begin
+            for(k=0;k<32;k=k+1) begin
+                Registers[k]<=32'b00;
+            end
+        end
+        else if(RegWrite) begin
+            Registers[Rd]<=Write_data;
         end
     end
 
     // combinational read
-    assign rdata1 = (raddr1 == 5'd0) ? 32'd0 : mem[raddr1];
-    assign rdata2 = (raddr2 == 5'd0) ? 32'd0 : mem[raddr2];
+    assign read_data1 = Registers[rs1];
+    assign read_data2 = Registers[rs2];
 
 endmodule
+
 ```
 
 ---
+
+## **Module 5 - **
 
 ## **MODULE — alu.sv**
 
