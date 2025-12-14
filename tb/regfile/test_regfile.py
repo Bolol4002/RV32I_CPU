@@ -54,7 +54,7 @@ async def random_write_read_test(dut):
     await Timer(1, units="ns")
     dut.address3.value = 0
     dut.write_enable.value = 1
-    dut.write_data = 0xAEAEAEAE
+    dut.write_data.value = 0xAEAEAEAE
     await RisingEdge(dut.clk)
     dut.write_enable.value = 0
     theorical_regs[address3] = 0

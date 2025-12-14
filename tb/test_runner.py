@@ -37,7 +37,11 @@ def test_full_adder():
 def test_memory():
     run_test("memory")
 
+def test_regfile():
+    run_test("regfile")
+
 
 if __name__ == "__main__":
     test_full_adder()
     test_memory()
+    test_regfile()

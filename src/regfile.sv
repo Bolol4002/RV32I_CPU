@@ -1,4 +1,5 @@
 // regfile.sv
+`timescale 1ns/1ps
 
 module regfile (
     // basic signals
