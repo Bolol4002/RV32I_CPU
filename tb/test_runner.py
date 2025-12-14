@@ -40,8 +40,12 @@ def test_memory():
 def test_regfile():
     run_test("regfile")
 
+def test_alu():
+    run_test("alu")
+
 
 if __name__ == "__main__":
     test_full_adder()
     test_memory()
     test_regfile()
+    test_alu()
