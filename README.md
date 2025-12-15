@@ -1,14 +1,14 @@
 # Notes
 
 ---
-
+## WEEK 1
 ### What is a processor??
 - CPU - for general purpose computation
 - GPU - graphical processing unit, mostly develop to render stuff like videos
 - TPU - tensor processing unit, neural network math best at ai training and inference
 - NPU - neural processing unit, built for ai locally on device.
 
----
+
 
 ### Architecture vs Microarchitecture, CISC vs RISC
 Architecture (Instruction Set Architecture, ISA)
@@ -23,3 +23,17 @@ A processor architecture philosophy characterized by a large and complex instruc
 
 RISC (Reduced Instruction Set Computer)
 A processor architecture philosophy characterized by a small, simple instruction set with fixed-length instructions, emphasizing single-cycle execution, load–store design, and efficient pipelining.
+
+
+
+### High level VS Machine Level language
+Compiler - converts high level to machine level language(assembly).
+High level - human understandable
+Machine level - understood by machines like 8086
+    ```
+    ADD X1,X2,X3
+    ```
+
+---
+
+## WEEK 2
