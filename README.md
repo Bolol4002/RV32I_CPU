@@ -8,8 +8,6 @@
 - TPU - tensor processing unit, neural network math best at ai training and inference
 - NPU - neural processing unit, built for ai locally on device.
 
-
-
 ### Architecture vs Microarchitecture, CISC vs RISC
 Architecture (Instruction Set Architecture, ISA)
 The formal specification that defines what a processor does from the programmer’s point of view, including instructions, registers, data types, memory model, and exception behavior.
@@ -24,8 +22,6 @@ A processor architecture philosophy characterized by a large and complex instruc
 RISC (Reduced Instruction Set Computer)
 A processor architecture philosophy characterized by a small, simple instruction set with fixed-length instructions, emphasizing single-cycle execution, load–store design, and efficient pipelining.
 
-
-
 ### High level VS Machine Level language
 Compiler - converts high level to machine level language(assembly).
 High level - human understandable
@@ -37,3 +33,13 @@ Machine level - understood by machines like 8086
 ---
 
 ## WEEK 2
+
+### General architecture we are following 
+![Diagram](img/image.png)
+
+### PC - Program counter
+It is the program counter it will point to the location which tell what to do or in other what instruction.
+![Diagram](img/image%20copy.png)
+
+### Instruction register 
+The CPU fetches an instruction from memory and temporarily stores it in the Instruction Register so it can decode and execute it.
