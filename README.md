@@ -348,3 +348,9 @@ Used for:
 * **U-type** → large immediate
 * **J-type** → jump + link
 
+
+### Our Instruction set
+Add, sub, or ,and 
+str ldr
+b, bl(wotn be there)
+
