@@ -1,6 +1,4 @@
-
 # Notes
-
 ---
 
 ## WEEK 1
@@ -19,7 +17,6 @@
 #### Architecture (Instruction Set Architecture – ISA)
 
 The formal specification that defines what a processor does from the programmer’s point of view, including:
-
 * Instructions
 * Registers
 * Data types
@@ -73,12 +70,13 @@ ADD X1, X2, X3
 
 ### General architecture we are following
 
-*(Diagram reference)*
+![Diagram](img/image.png)
 
 ---
 
 ### PC – Program Counter
 
+![Diagram](img/image%20copy.png)
 * Holds the address of the next instruction to execute
 * Points to instruction memory
 
@@ -90,6 +88,7 @@ Flow:
 ---
 
 ### Instruction Register (IR)
+![Diagram](img/instr_reg_op.png)
 
 In a CPU, an instruction is just a **32-bit number** (in RV32I).
 
@@ -146,11 +145,8 @@ Decoding flow:
 ## R-Type Instructions (Register–Register)
 
 ### What they do
-
 Operations purely between registers.
-
 Examples:
-
 ```asm
 add x3, x1, x2
 sub x5, x6, x7
@@ -158,11 +154,9 @@ and, or, slt, etc.
 ```
 
 Conceptually:
-
 ```
 rd = f(rs1, rs2)
 ```
-
 ### Bit layout
 
 ```
@@ -172,41 +166,31 @@ rd = f(rs1, rs2)
 ```
 
 ### Field meaning
-
 * `rs1` → first source register
 * `rs2` → second source register
 * `rd` → destination register
 * `funct3 + funct7` → exact operation
 
 Why both `funct3` and `funct7`?
-
 * Opcode space is precious
-
 Example:
-
 * ADD and SUB share:
-
 ```
 opcode = 0110011
 funct3 = 000
 ```
 
 * Differ only in `funct7`
-
 Hardware reality:
-
 ```
 ALU control = f(opcode, funct3, funct7)
 ```
-
 ---
 
 ## I-Type Instructions (Immediate)
 
 ### What they do
-
 Use **one register + constant value**.
-
 Examples:
 
 ```asm
@@ -216,7 +200,6 @@ jalr x1, x2, 0
 ```
 
 Conceptually:
-
 ```
 rd = f(rs1, immediate)
 ```
@@ -230,87 +213,64 @@ rd = f(rs1, immediate)
 ```
 
 ### Immediate
-
 * 12 bits
 * Signed
 * Sign-extended to 32 bits
 
 ### Why I-type exists
-
 Constants are everywhere:
-
 * Stack offsets
 * Array indexing
 * Pointer arithmetic
 * Loads and stores
-
 Without immediates, register usage would explode.
 
 ---
 
 ## Addressing Modes (Very Important)
-
 RISC-V is simple by design.
 
 ---
 
 ### Register addressing
-
 Used by R-type:
-
 ```asm
 add x3, x1, x2
 ```
-
 Operands come only from registers.
-
 ---
 
 ### Immediate addressing
-
 Used by I-type ALU ops:
-
 ```asm
 addi x3, x1, 12
 ```
-
 * `x1` → register
 * `12` → encoded in instruction
-
 ---
 
 ### Base + Offset addressing (CRITICAL)
-
 Used by loads and stores:
-
 ```asm
 lw x5, 8(x2)
 ```
-
 Meaning:
-
 ```
 address = x2 + 8
 x5 = MEM[address]
 ```
-
 Hardware flow:
-
 * Read `rs1`
 * Sign-extend immediate
 * ALU adds them
 * Result goes to memory address port
-
 This is why **ADD support in the ALU is mandatory early**.
 
 ---
 
 ## S-Type Instructions (Stores)
-
 Stores do **not write registers**, so there is no `rd`.
-
 Immediate is split due to space constraints.
-
 ### Bit layout
 
 ```
@@ -320,36 +280,28 @@ Immediate is split due to space constraints.
 ```
 
 Concept:
-
 ```
 MEM[rs1 + imm] = rs2
 ```
-
 ---
 
 ## B-Type Instructions (Branches)
-
 Branches:
-
 * Do not write registers
 * Use two registers
 * Use PC-relative offset
-
 Example:
-
 ```asm
 beq x1, x2, label
 ```
 
 Concept:
-
 ```c
 if (x1 == x2)
     PC = PC + offset
 ```
 
 Offset details:
-
 * Split across instruction
 * Shifted because instructions are word-aligned
 * LSB is always 0, so it is not stored
@@ -357,66 +309,33 @@ Offset details:
 ---
 
 ## U-Type Instructions (Upper Immediate)
-
 Used for large constants.
-
 Example:
-
 ```asm
 lui x5, 0x12345
 ```
-
 Meaning:
-
 ```
 x5 = 0x12345 << 12
 ```
-
 Avoids needing full 32-bit immediates everywhere.
 
 ---
 
 ## J-Type Instructions (Jumps)
-
 Used by `jal`.
-
 Example:
-
 ```asm
 jal x1, label
 ```
-
 Concept:
-
 ```
 x1 = PC + 4
 PC = PC + offset
 ```
-
 Used for:
-
 * Function calls
 * Long jumps
-
----
-
-## Big Picture (Key Insight)
-
-Instruction formats exist because:
-
-* Hardware wants simple, fixed wiring
-* Software wants expressiveness
-
-RISC-V balances both.
-
-Your CPU pipeline will have blocks like:
-
-* Instruction Decode
-* Immediate Generator
-* Register File
-* ALU Control
-
-All depend on instruction type.
 
 ---
 
@@ -429,12 +348,3 @@ All depend on instruction type.
 * **U-type** → large immediate
 * **J-type** → jump + link
 
----
-
-If you want, next I can:
-
-* Map these formats directly to your **Verilog decode logic**
-* Or walk through **one instruction bit-by-bit through the datapath**
-* Or help you turn this into **exam-ready condensed notes**
-
-Your move.
