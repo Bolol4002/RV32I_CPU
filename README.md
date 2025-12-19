@@ -16,7 +16,8 @@ Microarchitecture
 The internal hardware organization that implements an ISA, describing how instructions are executed using pipelines, execution units, caches, and control logic.
 Like for example x86 is used by intel and amd they bring their own flavours.
 
-CISC (Complex Instruction Set Computer)
+CISC (Complex Instruction Set Computer+++++++++++++++++++++++++++
+)
 A processor architecture philosophy characterized by a large and complex instruction set, often with variable-length instructions and single instructions that can perform multiple low-level operations.
 
 RISC (Reduced Instruction Set Computer)
@@ -43,3 +44,4 @@ It is the program counter it will point to the location which tell what to do or
 
 ### Instruction register 
 The CPU fetches an instruction from memory and temporarily stores it in the Instruction Register so it can decode and execute it.
+![Diagram](img/instr_reg_op.png)
